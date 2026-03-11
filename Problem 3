@@ -149,7 +149,7 @@ class Program
         BinaryTreeNode n48 = tree.Insert(48);
         BinaryTreeNode n99 = tree.Insert(99);
 
-        Console.WriteLine("Tree (InOrder):");
+        Console.WriteLine("Original tree:");
         tree.InOrder(tree.root);
         Console.WriteLine();
 
