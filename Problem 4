@@ -1,0 +1,199 @@
+using System;
+
+class BinaryTreeNode
+{
+    public int data;
+    public BinaryTreeNode left;
+    public BinaryTreeNode right;
+    public BinaryTreeNode parent;
+
+    public BinaryTreeNode(int d)
+    {
+        data = d;
+        left = null;
+        right = null;
+        parent = null;
+    }
+}
+
+class BinaryTree
+{
+    public BinaryTreeNode root;
+
+    public BinaryTree()
+    {
+        root = null;
+    }
+
+    public BinaryTreeNode Insert(int value)
+    {
+        BinaryTreeNode newNode = new BinaryTreeNode(value);
+
+        if (root == null)
+        {
+            root = newNode;
+            return newNode;
+        }
+
+        BinaryTreeNode current = root;
+
+        while (true)
+        {
+            if (value < current.data)
+            {
+                if (current.left == null)
+                {
+                    current.left = newNode;
+                    newNode.parent = current;
+                    return newNode;
+                }
+                current = current.left;
+            }
+            else
+            {
+                if (current.right == null)
+                {
+                    current.right = newNode;
+                    newNode.parent = current;
+                    return newNode;
+                }
+                current = current.right;
+            }
+        }
+    }
+
+    public void InOrder(BinaryTreeNode node)
+    {
+        if (node == null)
+            return;
+
+        InOrder(node.left);
+        Console.Write(node.data + " ");
+        InOrder(node.right);
+    }
+
+    public void SwapNodes(BinaryTreeNode p, BinaryTreeNode q)
+    {
+        if (p == null || q == null || p == q)
+            return;
+
+        BinaryTreeNode pParent = p.parent;
+        BinaryTreeNode qParent = q.parent;
+
+        BinaryTreeNode pLeft = p.left;
+        BinaryTreeNode pRight = p.right;
+
+        BinaryTreeNode qLeft = q.left;
+        BinaryTreeNode qRight = q.right;
+
+        if (pParent != null)
+        {
+            if (pParent.left == p)
+                pParent.left = q;
+            else
+                pParent.right = q;
+        }
+        else
+        {
+            root = q;
+        }
+
+        if (qParent != null)
+        {
+            if (qParent.left == q)
+                qParent.left = p;
+            else
+                qParent.right = p;
+        }
+        else
+        {
+            root = p;
+        }
+
+        p.parent = qParent;
+        q.parent = pParent;
+
+        p.left = qLeft;
+        p.right = qRight;
+
+        q.left = pLeft;
+        q.right = pRight;
+
+        if (p.left != null) p.left.parent = p;
+        if (p.right != null) p.right.parent = p;
+
+        if (q.left != null) q.left.parent = q;
+        if (q.right != null) q.right.parent = q;
+    }
+
+    public int GetLevl(BinaryTreeNode node)
+    {
+        int level = 0;
+        BinaryTreeNode current = node;
+
+        while (current != root)
+        {
+            current = current.parent;
+            level++;
+        }
+
+        return level;
+    }
+
+    public void PrintNodesAtLevl(BinaryTreeNode node, int level, BinaryTreeNode ignore)
+    {
+        if (node == null)
+            return;
+
+        if (level == 0)
+        {
+            if (node != ignore)
+                Console.Write(node.data + " ");
+            return;
+        }
+
+        PrintNodesAtLevl(node.left, level - 1, ignore);
+        PrintNodesAtLevl(node.right, level - 1, ignore);
+    }
+
+    
+    public void PrintSiblingsAtSameLevl(BinaryTreeNode target)
+    {
+        int level = GetLevl(target);
+
+        Console.Write("All nodes at same level as " + target.data + ": ");
+
+        PrintNodesAtLevl(root, level, target);
+
+        Console.WriteLine();
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        BinaryTree tree = new BinaryTree();
+
+        BinaryTreeNode n55 = tree.Insert(55);
+        BinaryTreeNode n45 = tree.Insert(45);
+        BinaryTreeNode n37 = tree.Insert(37);
+        BinaryTreeNode n18 = tree.Insert(18);
+        BinaryTreeNode n47 = tree.Insert(47);
+        BinaryTreeNode n48 = tree.Insert(48);
+        BinaryTreeNode n99 = tree.Insert(99);
+
+        Console.WriteLine("Tree (InOrder):");
+        tree.InOrder(tree.root);
+        Console.WriteLine("\n");
+
+        
+        tree.PrintSiblingsAtSameLevl(n55);
+        tree.PrintSiblingsAtSameLevl(n45); 
+        tree.PrintSiblingsAtSameLevl(n37);
+        tree.PrintSiblingsAtSameLevl(n47);
+        tree.PrintSiblingsAtSameLevl(n18); 
+
+        Console.ReadLine();
+    }
+}
